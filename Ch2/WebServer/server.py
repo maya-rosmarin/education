@@ -1,3 +1,4 @@
+import json
 from socket import *
 
 
@@ -17,14 +18,26 @@ def listen(server_socket):
         req = connection.recv(2048)
         if not req:
             return 1
-        parse(req)
-        print('maya made it here', req)
-        connection.send(req)
+        res, rcode = parse(req)
+        if rcode != 0:
+            return rcode
+
+        connection.send(res)
     return 0
 
 
 def parse(req):
-    
+    payload = json.loads(req)
+    file_name = payload['url']
+    try:
+        file_obj = open(file_name, 'r')
+        contents = file_obj.read()
+        return bytes(contents, encoding='utf-8'), 0
+
+    except IOError:
+        return None, 1
+    finally:
+        file_obj.close()
 
 if __name__ == '__main__':
     serve()
