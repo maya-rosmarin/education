@@ -9,7 +9,6 @@ def tcp_client():
     client_socket = socket(AF_INET, SOCK_STREAM)
     client_socket.connect((server_name, server_port))
     file_path = os.path.join(os.getcwd(), 'testing123.txt')
-    # file_path = "$(pwd)/testing123.txt"
     req = {'method': 'GET', 'url': file_path}
     client_socket.send(json.dumps(req, indent=2).encode('utf-8'))
     res = client_socket.recv(1024)

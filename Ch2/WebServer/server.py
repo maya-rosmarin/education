@@ -4,9 +4,7 @@ from socket import *
 
 def serve():
     with socket(AF_INET, SOCK_STREAM) as server_socket:
-        rcode = listen(server_socket)
-        if rcode != 0:
-            print('error processing request')
+        listen(server_socket)
 
 
 def listen(server_socket):
@@ -17,12 +15,15 @@ def listen(server_socket):
         connection, address = server_socket.accept()
         req = connection.recv(2048)
         if not req:
-            return 1
-        res, rcode = parse(req)
+            continue
+        body, rcode = parse(req)
         if rcode != 0:
-            return rcode
+            res = {'status': 404, 'message': 'Not Found', 'body': ''}
+            connection.send(json.dumps(res, indent=2).encode('utf-8'))
+            continue
 
-        connection.send(res)
+        res = {'status': 200, 'message': 'OK', 'body': body}
+        connection.send(json.dumps(res, indent=2).encode('utf-8'))
     return 0
 
 
@@ -32,12 +33,11 @@ def parse(req):
     try:
         file_obj = open(file_name, 'r')
         contents = file_obj.read()
-        return bytes(contents, encoding='utf-8'), 0
+        file_obj.close()
+        return contents, 0
 
     except IOError:
         return None, 1
-    finally:
-        file_obj.close()
 
 if __name__ == '__main__':
     serve()
