@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		014F07B72684DEE500BB7C7C /* EggTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014F07B62684DEE500BB7C7C /* EggTimer.swift */; };
 		01B4AC022683C9CA00D96983 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B4AC012683C9CA00D96983 /* AppDelegate.swift */; };
 		01B4AC042683C9CA00D96983 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01B4AC032683C9CA00D96983 /* ViewController.swift */; };
 		01B4AC062683C9CC00D96983 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01B4AC052683C9CC00D96983 /* Assets.xcassets */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		014F07B62684DEE500BB7C7C /* EggTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EggTimer.swift; sourceTree = "<group>"; };
 		01B4ABFE2683C9CA00D96983 /* EggTimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EggTimer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		01B4AC012683C9CA00D96983 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		01B4AC032683C9CA00D96983 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 		01C1F4032684DB6F001341E4 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				014F07B62684DEE500BB7C7C /* EggTimer.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -153,6 +156,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				01B4AC042683C9CA00D96983 /* ViewController.swift in Sources */,
+				014F07B72684DEE500BB7C7C /* EggTimer.swift in Sources */,
 				01C1F4012684445A001341E4 /* PrefsViewController.swift in Sources */,
 				01B4AC022683C9CA00D96983 /* AppDelegate.swift in Sources */,
 			);
