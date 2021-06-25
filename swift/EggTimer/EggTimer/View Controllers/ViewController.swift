@@ -26,6 +26,8 @@ class ViewController: NSViewController {
         }
         
         configureButtonsAndMenus()
+        
+        prepareSound()
     }
     
     @IBAction func stopButtonClicked(_ sender: Any) {
@@ -66,8 +68,6 @@ class ViewController: NSViewController {
         // Update the view, if already loaded.
         }
     }
-
-
 }
 
 extension ViewController: EggTimerProtocol {
@@ -79,6 +79,8 @@ extension ViewController: EggTimerProtocol {
         updateDisplay(for: 0)
         
         configureButtonsAndMenus()
+        
+        playSound()
     }
 }
 
