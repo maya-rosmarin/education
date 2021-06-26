@@ -1,0 +1,607 @@
+UIKit is Apple's native user interface toolkit. It contains things like buttons, text boxes, navigation controls and more, and you drive it using Swift.
+
+AppKit is Apple’s native user interface toolkit for macOS. Like UIKit it contains things like buttons, text boxes, and more, although focused on macOS rather than iOS.
+
+SwiftUI is a cross-platform toolkit that lets us build apps for iOS, macOS, tvOS, and watchOS.
+Cocoa Touch is the name commonly used for Apple's vast collection of frameworks for iOS. It includes 
+UIKit to do user interfaces, but most people would say it also includes SpriteKit for making 2D games, SceneKit for making 3D games, MapKit for maps, Core Graphics for drawing, Core Animation for animating things, and much more.
+
+Cocoa is the name used for Apple’s framework collection on macOS. Strictly speaking it’s made up of 
+
+AppKit for user interface, Foundation for basic functionality, and Core Data for object graphs, but like Cocoa Touch it’s often used to mean “all of macOS development.”
+
+Playgrounds are miniature Swift testing environments that let you type code and see the results immediately. You don't build real apps with them, but they are great for learning.
+
+
+`var` for variable declarations
+
+`let` for constant declarations
+
+
+
+you can declare and define a variable at once
+
+`var name = "Maya"`
+
+`var age = 5`
+
+or use a type annotation
+
+`var name: String`
+
+`var age: Int`
+
+`var age: Int = 3`
+
+
+
+basic types are String, Int, Float, Double, Bool
+
+Double has higher accuracy than Float
+
+
+
+string interpolation
+
+var name = "Maya"
+
+"Your name is \(name)"
+
+
+
+arrays use type inference and can be declared un-typed
+
+`var evenNumbers = [2, 4, 6, 8]
+
+type(of: evenNumbers)`
+
+=> Array<Int>.Type
+
+
+
+they can also be declared with types
+
+`var songs: [String] = ["Shake it Off", "You Belong with Me", "Back to December"]
+
+var songs: [Any] = ["Shake it Off", "You Belong with Me", "Back to December", 3]
+
+var songs: [String] = []
+
+var songs = [String]()`
+
+
+
+ranges inclusive ...
+
+`for i in 1...10 {
+
+    print("\(i) x 10 is \(i * 10)")
+
+}`
+
+ranges exclusive ..<
+
+
+
+to range through an array
+
+`for song in songs {
+
+    print(song)
+
+}
+
+
+
+for i in 0..<people.count {
+
+    print(song)
+
+}`
+
+
+
+switch case statements do not fall through
+
+`var val = 2
+
+switch val {
+
+case 0:
+
+case 1:
+
+case 2:
+
+    print("got a match")
+
+default:
+
+}
+
+
+
+switch val {
+
+case 0..>2:
+
+case 2:
+
+    print("got a match")
+
+default:
+
+}`
+
+
+
+`func favoriteAlbum(name: String) {
+
+    print("My favorite album is \(name)")
+
+}
+
+
+
+favoriteAlbum(name: "Fearless")`
+
+
+
+you can use different internal and external parameter names for functions by declaring the variable twice
+
+`func countLettersInString(external internal: String) {
+
+    print("internal handle \(internal)")
+
+}
+
+countLettersInString(external: "Hello")
+
+
+
+func countLettersInString(_ internal: String) {
+
+    print("internal handle \(internal)")
+
+}
+
+
+
+countLettersInString("Hello")
+
+
+
+func countLetters(in str: String) {
+
+print("internal handle \(str)")
+
+}
+
+countLetters(in: "Hello")`
+
+
+
+return values
+
+`func albumIsTaylors(name: String) -> Bool {
+
+    if name == "Fearless" { return true  }
+
+    return false
+
+}`
+
+
+
+optionals might have a value or might not
+
+`func getStatus(weather: String) -> String? {
+
+    if weather == "sunny" { return nil }
+
+    return "good"
+
+}
+
+
+
+var status: String?
+
+status = getStatus(weather: "rainy")`
+
+
+
+optional unwrapping checks if an optional has a value, and if so, it unwraps that into a non-optional type and then runs code block
+
+`if let unwrappedStatus = status {
+
+    // unwrappedStatus contains a non-optional string
+
+} else {
+
+     // it's an optional
+
+}`
+
+
+
+you can overwrite optional safety by using !, if you know an optional definitely has a value
+
+`func yearAlbumReleased(name: String) -> Int? {
+
+    if name == "Fearless" { return 2008 }
+
+    return nil
+
+}
+
+
+
+var year = yearAlbumReleased(name: "Fearless")
+
+if year == nil {
+
+    print("There was an error")
+
+} else {
+
+    print("It was released in \(year)")
+
+}`
+
+=> It was released in Optional(2008)
+
+to force unwrap the value (e.g. if you've already nil-checked), use
+
+`print("It was released in \(year!)")`
+
+
+
+implicitly unwrapped optionals
+
+`var name: String = "Paul"
+
+var name2: String? = "Bob"
+
+var name3: String! = "Sophie"`
+
+name2 must be unwrapped to be used, name3 does not have to be unwrapped
+
+
+
+optional chaining
+
+`let album = albumReleased(year: 2006)?.uppercased()`
+
+chained optionals will be checked left to right until it finds a nil at which point it stops
+
+
+
+nil coalescing operator `??`
+
+`let album = albumReleased(year: 2006) ?? "unknown"`
+
+if the return val is nil, it will return "unknown"
+
+
+
+`enum WeatherType {
+
+    case sun
+
+    case cloud
+
+    case rain
+
+    case wind
+
+    case snow
+
+}
+
+
+
+func getHaterStatus(weather: WeatherType) -> String? {
+
+    if weather == .sun {
+
+        return nil
+
+    } else {
+
+        return "Hate"
+
+    }
+
+}`
+
+Swift uses type inference, knowing that weather var is a WeatherType object, so can identify it using just `.sun`
+
+
+
+`func getHaterStatus(weather: WeatherType) -> String? {
+
+    switch weather {
+
+    case .sun:
+
+        return nil
+
+    case .cloud, .wind:
+
+        return "dislike"
+
+    }
+
+}`
+
+above will fail to compile because it does not cover all cases in the enum - either add cases for wind, snow, etc. or a default case to build
+
+
+
+attach optional values to enum values and check in a case switch
+
+`enum WeatherType {
+
+case sun
+
+case cloud
+
+case rain
+
+case wind(speed: Int)
+
+case snow
+
+}
+
+
+
+func getHaterStatus(weather: WeatherType) -> String? {
+
+    switch weather {
+
+    case .sun:
+
+        return nil
+
+    case .wind(let speed) where speed < 10:
+
+        return "meh"
+
+    case .cloud, .wind:
+
+        return "dislike"
+
+    default:
+
+        return nil
+
+    }
+
+}`
+
+
+
+member-wise initializers are automatically created when you define a struct
+
+`struct Person {
+
+    var clothes: String
+
+    var shoes: String
+
+}
+
+
+
+let taylor = Person(clothes: "T-shirts", shoes: "sneakers")`
+
+
+
+copies of structs created like so
+
+`let taylor = Person(clothes: "T-shirts", shoes: "sneakers")
+
+var taylorCopy = taylor`
+
+are copied by value not reference
+
+
+
+classes do not get automatic member-wise initializers as structs do
+
+classes can inherit from other classes
+
+when you create an instance of a class it's called and object, and when you copy that object, they are copied by reference
+
+`class Person {
+
+    var clothes: String
+
+    var shoes: String
+
+
+
+    init(clothes: String, shoes: String) {
+
+        self.clothes = clothes
+
+        self.shoes = shoes
+
+    }
+
+
+
+    func sing() {
+
+         print("la la")
+
+    }
+
+}`
+
+all non-optional values must have a value by the end of its initializer
+
+
+
+`class Singer: Person {
+
+    override func sing() {
+
+        print("different la la")
+
+    }    
+
+}`
+
+
+
+`class HeavyMetalSinger: Singer {
+
+    var noiseLevel: Int
+
+
+
+    init(name: String, age: String, noseLevel: Int) {
+
+        self.noiseLevel = noiseLevel
+
+        super.init(name: name, age: age)
+
+    }
+
+}`
+
+
+
+if you need to make a function or class available for iOS to call, mark it with the attribute objc
+
+`@objc func sing() {}`
+
+
+
+two property observers, `willSet` which gives you a `newValue` handle and `didSet` which gives you an `oldValue` handle, which are called before or after a property is changed
+
+`struct Person {
+
+    var clothes: String {
+
+        willSet {
+
+            updateUI(msg: "I'm changing from \(clothes) to \(newValue)")
+
+        }
+
+    }
+
+}`
+
+
+
+computed properties can be accessed as properties but do a calculation at the time they're called, similar to functions
+
+`struct Person {
+
+    var age: Int
+
+    
+
+    var ageInDogYears: Int {
+
+        get {
+
+            return age * 7
+
+        }
+
+    }
+
+}
+
+
+
+var fan = Person(age: 25)
+
+print(fan.ageInDogYears)`
+
+
+
+static properties and methods belong to the type rather than an instance
+
+
+
+access control
+
+public - anyone can read and write property
+
+internal - only your Swift code can read and write
+
+fileprivate - only Swift code in same file
+
+private - property is available only to methods defined on the type
+
+
+
+typecasting
+
+`for album in allAlbums {
+
+    let studioAlbum = album as? StudioAlbum
+
+}`
+
+if typecast worked, you have a cast obj, otherwise nil
+
+
+
+a closure is a variable that can hold lines of swift code
+
+
+
+protocols - interface contract
+
+
+
+Extensions let us modify Swift’s data types to add new functionality
+
+protocol extensions let us define implementations of things inside the protocol, adding the functionality to all types that conform to the protocol in a single place.
+
+
+
+Swift’s solution is to let us create protocol extensions: extensions that modify several data types at once.
+
+You’ve already seen how the self keyword lets us refer to our current value, so self * self means “multiply my current number by itself.” Well, there’s also Self with a capital S, which has a subtly different meaning: it means “my current data type.” So, self means “my current value” and Self means “my current data type.”
+
+
+
+If we want clamp() to apply to all types of integer, we can’t very well make it return Int - that’s not big enough to hold the full range of a UInt64, so Swift will refuse to build. Instead, we need to make the method return Self, which means “I’ll return whatever data type I was used with.”
+
+Here’s the rewritten extension:
+
+extension BinaryInteger {
+    func clamp(low: Self, high: Self) -> Self {
+        if (self > high) {
+            return high
+        } else if (self < low) {
+            return low
+        }
+
+        return self
+    }
+}
+Protocol extensions are helpful for providing default method implementations so that conforming types don’t need to implement those methods themselves unless they specifically want to.
+
+As an example, we might define an extension for our Employee protocol so that all conforming types automatically get a doWork() method:
+
+protocol Employee {
+    var name: String { get set }
+    var jobTitle: String { get set }
+    func doWork()
+}
+
+extension Employee {
+    func doWork() {
+        print("I'm busy!")
+    }
+}

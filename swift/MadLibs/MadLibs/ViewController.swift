@@ -8,9 +8,12 @@
 import Cocoa
 
 class ViewController: NSViewController {
-
+    @IBOutlet var pastTenseVerbTextField: NSTextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        pastTenseVerbTextField.stringValue = "ate"
 
         // Do any additional setup after loading the view.
     }
