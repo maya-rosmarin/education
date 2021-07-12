@@ -649,4 +649,101 @@ But if we tried reading the favorite ice cream for Charlotte, we’d get back ni
 giving the dictionary a default value of “Unknown”, so that when no ice cream is found for Charlotte we get back “Unknown” rather than nil:
 favoriteIceCream["Charlotte", default: "Unknown"]
 
+you can create an empty array to store integers like this:
+
+var results = [Int]()
+The exception is creating an empty set, which is done differently:
+
+var words = Set<String>()
+var numbers = Set<Int>()
+This is because Swift has special syntax only for dictionaries and arrays; other types must use angle bracket syntax like sets.
+
+If you wanted, you could create arrays and dictionaries with similar syntax:
+
+var scores = Dictionary<String, Int>()
+var results = Array<Int>()
+
+we might define an enum that stores various kinds of activities:
+
+enum Activity {
+    case bored
+    case running
+    case talking
+    case singing
+}
+That lets us say that someone is talking, but we don’t know what they are talking about, or we can know that someone is running, but we don’t know where they are running to.
+
+Enum associated values let us add those additional details:
+
+enum Activity {
+    case bored
+    case running(destination: String)
+    case talking(topic: String)
+    case singing(volume: Int)
+}
+Now we can be more precise – we can say that someone is talking about football:
+
+let talking = Activity.talking(topic: "football")
+
+Swift supports operator overloading, which is a fancy way of saying that what an operator does depends on the values you use it with. For example, + sums integers like this:
+
+let meaningOfLife = 42
+let doubleMeaning = 42 + 42
+But + also joins strings, like this:
+
+let fakers = "Fakers gonna "
+let action = fakers + "fake"
+You can even use + to join arrays, like this:
+
+let firstHalf = ["John", "Paul"]
+let secondHalf = ["George", "Ringo"]
+let beatles = firstHalf + secondHalf
+Remember, Swift is a type-safe language, which means it won’t let you mix types. For example, you can’t add an integer to a string because it doesn’t make any sense.
+
+The third way of writing loops is not commonly used, but it’s so simple to learn we might as well cover it: it’s called the repeat loop, and it’s identical to a while loop except the condition to check comes at the end.
+
+So, we could rewrite our hide and seek example like this:
+
+var number = 1
+
+repeat {
+    print(number)
+    number += 1
+} while number <= 20
+
+print("Ready or not, here I come!")
+Because the condition comes at the end of the repeat loop the code inside the loop will always be executed at least once, whereas while loops check their condition before their first run.
+
+outerLoop: for i in 1...10 {
+    for j in 1...10 {
+        let product = i * j
+        print ("\(i) * \(j) is \(product)")
+    }
+}
+Second, add our condition inside the inner loop, then use break outerLoop to exit both loops at the same time:
+
+outerLoop: for i in 1...10 {
+    for j in 1...10 {
+        let product = i * j
+        print ("\(i) * \(j) is \(product)")
+
+        if product == 50 {
+            print("It's a bullseye!")
+            break outerLoop
+        }
+    }
+}
+
+You might have noticed that we don’t actually send any parameter names when we call print() – we say print("Hello") rather than print(message: "Hello").
+
+You can get this same behavior in your own functions by using an underscore, _, for your external parameter name, like this:
+
+func greet(_ person: String) {
+    print("Hello, \(person)!")
+}
+
+You can make any parameter variadic by writing ... after its type. So, an Int parameter is a single integer, whereas Int... is zero or more integers – potentially hundreds.
+
+Inside the function, Swift converts the values that were passed in to an array of integers, so you can loop over them as needed.
+
 
