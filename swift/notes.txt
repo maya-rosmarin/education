@@ -967,5 +967,165 @@ For safety reasons, Swift always makes you call super.init() from child classes 
 
 Swift requires us to use override func rather than just func when overriding a method – it stops you from overriding a method by accident, and you’ll get an error if you try to override something that doesn’t exist on the parent class
 
+To make a class final just put the final keyword before it, like this:
+
+final class Dog {
+    var name: String
+    var breed: String
+
+    init(name: String, breed: String) {
+        self.name = name
+        self.breed = breed
+    }
+}
+
+The third difference between classes and structs is how they are copied. When you copy a struct, both the original and the copy are different things – changing one won’t change the other. When you copy a class, both the original and the copy point to the same thing, so changing one does change the other.
+
+And now for the deinitializer. This will be called when the Person instance is being destroyed:
+
+deinit {
+    print("\(name) is no more!")
+}
+
+The final difference between classes and structs is the way they deal with constants. If you have a constant struct with a variable property, that property can’t be changed because the struct itself is constant.
+
+However, if you have a constant class with a variable property, that property can be changed. Because of this, classes don’t need the mutating keyword with methods that change properties; that’s only needed with structs.
+
+This difference means you can change any variable property on a class even when the class is created as a constant – this is perfectly valid code:
+
+class Singer {
+    var name = "Taylor Swift"
+}
+
+let taylor = Singer()
+taylor.name = "Ed Sheeran"
+print(taylor.name)
+If you want to stop that from happening you need to make the property constant:
+
+class Singer {
+    let name = "Taylor Swift"
+}
+
+protocol Identifiable {
+    var id: String { get set }
+}
+We can’t create instances of that protocol - it’s a description of what we want, rather than something we can create and use directly. But we can create a struct that conforms to it:
+
+struct User: Identifiable {
+    var id: String
+}
+Finally, we’ll write a displayID() function that accepts any Identifiable object:
+
+func displayID(thing: Identifiable) {
+    print("My ID is \(thing.id)")
+}
+
+One protocol can inherit from another in a process known as protocol inheritance. Unlike with classes, you can inherit from multiple protocols at the same time before you add your own customizations on top.
+
+Swift doesn’t let you add stored properties in extensions, so you must use computed properties instead. For example, we could add a new isEven computed property to integers that returns true if it holds an even number:
+
+extension Int {
+    var isEven: Bool {
+        return self % 2 == 0
+    }
+}
+
+Protocols let you describe what methods something should have, but don’t provide the code inside. Extensions let you provide the code inside your methods, but only affect one data type – you can’t add the method to lots of types at the same time.
+
+Protocol extensions solve both those problems: they are like regular extensions, except rather than extending a specific type like Int you extend a whole protocol so that all conforming types get your changes.
+
+Protocol extensions can provide default implementations for our own protocol methods. This makes it easy for types to conform to a protocol, and allows a technique called “protocol-oriented programming” – crafting your code around protocols and protocol extensions.
+
+First, here’s a protocol called Identifiable that requires any conforming type to have an id property and an identify() method:
+
+protocol Identifiable {
+    var id: String { get set }
+    func identify()
+}
+We could make every conforming type write their own identify() method, but protocol extensions allow us to provide a default:
+
+extension Identifiable {
+    func identify() {
+        print("My ID is \(id).")
+    }
+}
+
+if let unwrapped = name {
+    print("\(unwrapped.count) letters")
+} else {
+    print("Missing name.")
+}
+If name holds a string, it will be put inside unwrapped as a regular String and we can read its count property inside the condition. Alternatively, if name is empty, the else code will be run.
+
+However, the major difference between if let and guard let is that your unwrapped optional remains usable after the guard code.
+
+Let’s try it out with a greet() function. This will accept an optional string as its only parameter and try to unwrap it, but if there’s nothing inside it will print a message and exit. Because optionals unwrapped using guard let stay around after the guard finishes, we can print the unwrapped string at the end of the function:
+
+func greet(_ name: String?) {
+    guard let unwrapped = name else {
+        print("You didn't provide a name!")
+        return
+    }
+
+    print("Hello, \(unwrapped)!")
+}
+
+Even though Swift isn’t sure the conversion will work, you can see the code is safe so you can force unwrap the result by writing ! after Int(str), like this:
+
+let num = Int(str)!
+Swift will immediately unwrap the optional and make num a regular Int rather than an Int?. But if you’re wrong – if str was something that couldn’t be converted to an integer – your code will crash.
+
+If we call that with ID 15 we’ll get back nil because the user isn’t recognized, but with nil coalescing we can provide a default value of “Anonymous” like this:
+
+let user = username(for: 15) ?? "Anonymous"
+
+There are two alternatives to try, both of which will make more sense now that you understand optionals and force unwrapping.
+
+The first is try?, and changes throwing functions into functions that return an optional. If the function throws an error you’ll be sent nil as the result, otherwise you’ll get the return value wrapped as an optional.
+
+Using try? we can run checkPassword() like this:
+
+if let result = try? checkPassword("password") {
+    print("Result was \(result)")
+} else {
+    print("D'oh.")
+}
+
+The other alternative is try!, which you can use when you know for sure that the function will not fail. If the function does throw an error, your code will crash.
+
+Using try! we can rewrite the code to this:
+
+try! checkPassword("sekrit")
+print("OK!")
+
+This is a failable initializer: an initializer that might work or might not. You can write these in your own structs and classes by using init?() rather than init(), and return nil if something goes wrong. The return value will then be an optional of your type, for you to unwrap however you want.
+
+As an example, we could code a Person struct that must be created using a nine-letter ID string. If anything other than a nine-letter string is used we’ll return nil, otherwise we’ll continue as normal.
+
+Here’s that in Swift:
+
+struct Person {
+    var id: String
+
+    init?(id: String) {
+        if id.count == 9 {
+            self.id = id
+        } else {
+            return nil
+        }
+    }
+}
+
+If we want to loop over the pets array and ask all the dogs to bark, we need to perform a typecast: Swift will check to see whether each pet is a Dog object, and if it is we can then call makeNoise().
+
+This uses a new keyword called as?, which returns an optional: it will be nil if the typecast failed, or a converted type otherwise.
+
+Here’s how we write the loop in Swift:
+
+for pet in pets {
+    if let dog = pet as? Dog {
+        dog.makeNoise()
+    }
+}
 
 
