@@ -746,4 +746,226 @@ You can make any parameter variadic by writing ... after its type. So, an Int pa
 
 Inside the function, Swift converts the values that were passed in to an array of integers, so you can loop over them as needed.
 
+Sometimes functions fail because they have bad input, or because something went wrong internally. Swift lets us throw errors from functions by marking them as throws before their return type, then using the throw keyword when something goes wrong.
+
+First we need to define an enum that describes the errors we can throw. These must always be based on Swift’s existing Error type. We’re going to write a function that checks whether a password is good, so we’ll throw an error if the user tries an obvious password:
+
+enum PasswordError: Error {
+    case obvious
+}
+Now we’ll write a checkPassword() function that will throw that error if something goes wrong. This means using the throws keyword before the function’s return value, then using throw PasswordError.obvious if their password is “password”.
+
+Here’s that in Swift:
+
+func checkPassword(_ password: String) throws -> Bool {
+    if password == "password" {
+        throw PasswordError.obvious
+    }
+
+    return true
+}
+
+Swift doesn’t like errors to happen when your program runs, which means it won’t let you run an error-throwing function by accident.
+
+Instead, you need to call these functions using three new keywords: do starts a section of code that might cause problems, try is used before every function that might throw an error, and catch lets you handle errors gracefully.
+
+If any errors are thrown inside the do block, execution immediately jumps to the catch block. Let’s try calling checkPassword() with a parameter that throws an error:
+
+do {
+    try checkPassword("password")
+    print("That password is good!")
+} catch {
+    print("You can't use that password.")
+}
+
+All parameters passed into a Swift function are constants, so you can’t change them. If you want, you can pass in one or more parameters as inout, which means they can be changed inside your function, and those changes reflect in the original value outside the function.
+
+For example, if you want to double a number in place – i.e., change the value directly rather than returning a new one – you might write a function like this:
+
+func doubleInPlace(number: inout Int) {
+    number *= 2
+}
+To use that, you first need to make a variable integer – you can’t use constant integers with inout, because they might be changed. You also need to pass the parameter to doubleInPlace using an ampersand, &, before its name, which is an explicit recognition that you’re aware it is being used as inout.
+
+In code, you’d write this:
+
+var myNum = 10 
+doubleInPlace(number: &myNum)
+
+Functions can return values, and again you just specify what type will be sent back. Use tuples if you want to return several things.
+
+When you create closures, they don’t have a name or space to write any parameters. That doesn’t mean they can’t accept parameters, just that they do so in a different way: they are listed inside the open braces.
+
+To make a closure accept parameters, list them inside parentheses just after the opening brace, then write in so that Swift knows the main body of the closure is starting.
+
+For example, we could make a closure that accepts a place name string as its only parameter like this:
+
+let driving = { (place: String) in
+    print("I'm going to \(place) in my car")
+}
+One of the differences between functions and closures is that you don’t use parameter labels when running closures. So, to call driving() now we’d write this:
+
+driving("London")
+
+let drivingWithReturn = { (place: String) -> String in
+    return "I'm going to \(place) in my car"
+}
+We can now run that closure and print its return value:
+
+let message = drivingWithReturn("London")
+print(message)
+
+func travel(action: () -> Void) {
+    print("I'm getting ready to go.")
+    action()
+    print("I arrived!")
+}
+
+If the last parameter to a function is a closure, Swift lets you use special syntax called trailing closure syntax. Rather than pass in your closure as a parameter, you pass it directly after the function inside braces.
+
+To demonstrate this, here’s our travel() function again. It accepts an action closure so that it can be run between two print() calls:
+
+func travel(action: () -> Void) {
+    print("I'm getting ready to go.")
+    action()
+    print("I arrived!")
+}
+Because its last parameter is a closure, we can call travel() using trailing closure syntax like this:
+
+travel() {
+    print("I'm driving in my car")
+}
+
+travel { (place: String) in
+    print("I'm going to \(place) in my car")
+}
+
+We just made a travel() function. It accepts one parameter, which is a closure that itself accepts one parameter and returns a string. That closure is then run between two calls to print().
+
+Here’s that in code:
+
+func travel(action: (String) -> String) {
+    print("I'm getting ready to go.")
+    let description = action("London")
+    print(description)
+    print("I arrived!")
+}
+We can call travel() using something like this:
+
+travel { (place: String) -> String in
+    return "I'm going to \(place) in my car"
+}
+However, Swift knows the parameter to that closure must be a string, so we can remove it:
+
+travel { place -> String in
+    return "I'm going to \(place) in my car"
+}
+It also knows the closure must return a string, so we can remove that:
+
+travel { place in
+    return "I'm going to \(place) in my car"
+}
+As the closure only has one line of code that must be the one that returns the value, so Swift lets us remove the return keyword too:
+
+travel { place in
+    "I'm going to \(place) in my car"
+}
+Swift has a shorthand syntax that lets you go even shorter. Rather than writing place in we can let Swift provide automatic names for the closure’s parameters. These are named with a dollar sign, then a number counting from 0.
+
+travel {
+    "I'm going to \($0) in my car"
+}
+
+Closure capturing happens if we create values in travel() that get used inside the closure. For example, we might want to track how often the returned closure is called:
+
+func travel() -> (String) -> Void {
+    var counter = 1
+
+    return {
+        print("\(counter). I'm going to \($0)")
+        counter += 1
+    }
+}
+Even though that counter variable was created inside travel(), it gets captured by the closure so it will still remain alive for that closure.
+
+What we want to happen is for Swift to print a message every time amount changes, and we can use a didSet property observer for that. This will run some code every time amount changes:
+
+struct Progress {
+    var task: String
+    var amount: Int {
+        didSet {
+            print("\(task) is now \(amount)% complete")
+        }
+    }
+}
+You can also use willSet to take action before a property changes, but that is rarely used.
+
+If a struct has a variable property but the instance of the struct was created as a constant, that property can’t be changed – the struct is constant, so all its properties are also constant regardless of how they were created.
+
+The problem is that when you create the struct Swift has no idea whether you will use it with constants or variables, so by default it takes the safe approach: Swift won’t let you write methods that change properties unless you specifically request it.
+
+When you want to change a property inside a method, you need to mark it using the mutating keyword, like this:
+
+struct Person {
+    var name: String
+
+    mutating func makeAnonymous() {
+        name = "Anonymous"
+    }
+}
+
+We can provide our own initializer to replace the default one. For example, we might want to create all new users as “Anonymous” and print a message, like this:
+
+struct User {
+    var username: String
+
+    init() {
+        username = "Anonymous"
+        print("Creating a new user!")
+    }
+}
+You don’t write func before initializers, but you do need to make sure all properties have a value before the initializer ends.
+
+We might use that FamilyTree struct as a property inside a Person struct, like this:
+
+struct Person {
+    var name: String
+    var familyTree = FamilyTree()
+
+    init(name: String) {
+        self.name = name
+    }
+}
+
+var ed = Person(name: "Ed")
+But what if we didn’t always need the family tree for a particular person? If we add the lazy keyword to the familyTree property, then Swift will only create the FamilyTree struct when it’s first accessed:
+
+lazy var familyTree = FamilyTree()
+So, if you want to see the “Creating family tree!” message, you need to access the property at least once:
+
+ed.familyTree
+
+Because the classSize property belongs to the struct itself rather than instances of the struct, we need to read it using Student.classSize:
+
+print(Student.classSize)
+
+The first difference between classes and structs is that classes never come with a memberwise initializer. This means if you have properties in your class, you must always create your own initializer.
+
+For example:
+
+class Dog {
+    var name: String
+    var breed: String
+
+    init(name: String, breed: String) {
+        self.name = name
+        self.breed = breed
+    }
+}
+
+For safety reasons, Swift always makes you call super.init() from child classes – just in case the parent class does some important work when it’s created.
+
+Swift requires us to use override func rather than just func when overriding a method – it stops you from overriding a method by accident, and you’ll get an error if you try to override something that doesn’t exist on the parent class
+
+
 
