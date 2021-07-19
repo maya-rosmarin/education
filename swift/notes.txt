@@ -1128,4 +1128,25 @@ for pet in pets {
     }
 }
 
+Auto Layout: it lets you define rules for how your views should be laid out, and it automatically makes sure those rules are followed.
 
+But – and this is a big but! – it has two rules of its own, both of which must be followed by you:
+
+Your layout rules must be complete. That is, you can't specify only an X position for something, you must also specify a Y position. If it's been a while since you were at school, "X" is position from the left of the screen, and "Y" is position from the top of the screen.
+Your layout rules must not conflict. That is, you can't specify that a view must be 10 points away from the left edge, 10 points away from the right edge, and 1000 points wide. An iPhone 5 screen is only 320 points wide, so your layout is mathematically impossible. Auto Layout will try to recover from these problems by breaking rules until it finds a solution, but the end result is never what you want.
+
+You can create Auto Layout rules – known as constraints – entirely inside Interface Builder, and it will warn you if you aren't following the two rules. It will even help you correct any mistakes you make by suggesting fixes.
+
+You already saw that view controllers have an optional storyboard property that either contains the storyboard they were loaded from or nil. Well, they also have an optional navigationController property that contains the navigation controller they are inside if it exists, or nil otherwise.
+
+This is perfect for us, because navigation controllers are responsible for showing screens. Sure, they provide that nice gray bar across the top that you see in lots of apps, but they are also responsible for maintaining a big stack of screens that users navigate through.
+
+Delegation is what's called a programming pattern – a way of writing code – and it's used extensively in iOS. And for good reason: it's easy to understand, easy to use, and extremely flexible.
+
+A delegate is one thing acting in place of another, effectively answering questions and responding to events on its behalf. In our example, we're using WKWebView: Apple's powerful, flexible and efficient web renderer. But as smart as WKWebView is, it doesn't know (or care) how our application wants to behave, because that's our custom code.
+
+The delegation solution is brilliant: we can tell WKWebView that we want to be informed when something interesting happens. In our code, we're setting the web view's navigationDelegate property to self, which means "when any web page navigation happens, please tell me – the current view controller.
+
+As you know, when we say class A: B we’re defining a new class called A that builds on the functionality provided by class B. However, when we say class A: B, C we’re saying it inherits from UIViewController (the first item in the list), and promises it implements the WKNavigationDelegate protocol.
+
+”
